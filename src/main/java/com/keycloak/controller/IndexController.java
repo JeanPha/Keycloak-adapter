@@ -81,8 +81,19 @@ public class IndexController {
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(String username, String password) {
-        String login = restService.login(username, password);
-       return ResponseEntity.ok(login);
+    	try {
+    		 String login = restService.login(username, password);
+    		 System.out.println(username);
+	          logger.error("Username: ", username);
+    		 System.out.println(password);    		 
+	          logger.error("Password: ", password);
+
+    	     return ResponseEntity.ok(login);	
+		} catch (Exception e) {
+	           logger.error("Error al querer obtener token: ", e.getMessage());
+	           System.out.println("Error al querer obtener token: " + e);   
+		}
+       return  (ResponseEntity<?>) ResponseEntity.notFound();
     }
 
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
