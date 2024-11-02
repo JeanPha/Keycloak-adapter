@@ -1,7 +1,23 @@
 package com.keycloak.controller;
 
-import com.keycloak.service.KeycloakRestService;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.auth0.jwk.Jwk;
 import com.auth0.jwt.JWT;
@@ -9,18 +25,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.keycloak.exception.BussinesRuleException;
 import com.keycloak.service.JwtService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.web.bind.annotation.*;
-
-import java.security.interfaces.RSAPublicKey;
-import java.util.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.keycloak.service.KeycloakRestService;
 
 
 @RestController
@@ -88,12 +93,22 @@ public class IndexController {
     		 System.out.println(password);    		 
 	          logger.error("Password: ", password);
 
-    	     return ResponseEntity.ok(login);	
-		} catch (Exception e) {
-	           logger.error("Error al querer obtener token: ", e.getMessage());
-	           System.out.println("Error al querer obtener token: " + e);   
-		}
-       return  (ResponseEntity<?>) ResponseEntity.notFound();
+    	     return ResponseEntity.ok(login);	 
+        } catch (HttpClientErrorException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                errorResponse.put("message", "Usuario no autorizado para iniciar sesión.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+            }
+            errorResponse.put("error", "Error de aplicación");
+            errorResponse.put("message", e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error interno");
+            errorResponse.put("message", "Error interno del servidor.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
