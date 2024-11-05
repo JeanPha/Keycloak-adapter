@@ -28,7 +28,8 @@ import com.keycloak.exception.BussinesRuleException;
 import com.keycloak.service.JwtService;
 import com.keycloak.service.KeycloakRestService;
 
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200","http://abstract.com.ar", "https://abstract-proyecto.herokuapp.com"})
 @RestController
 public class IndexController {
 
