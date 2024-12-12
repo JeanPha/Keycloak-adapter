@@ -56,6 +56,8 @@ public class KeycloakRestService {
      * @return
      */
     public String login(String username, String password) {
+    	
+    	System.out.println("ENTRO AL LOGIN");
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("username",username);
         map.add("password",password);
@@ -63,6 +65,9 @@ public class KeycloakRestService {
         map.add("grant_type",grantType);
         map.add("client_secret",clientSecret);
         map.add("scope",scope);
+        
+        System.out.println("URL: " + keycloakTokenUri);
+        System.out.println("Request: " + map);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, new HttpHeaders());
         return restTemplate.postForObject(keycloakTokenUri, request, String.class);
@@ -95,11 +100,18 @@ public class KeycloakRestService {
     }
 
     public List<String> getRoles(String token) throws Exception {
-        String response = getUserInfo(token);
-
-        // get roles
-        Map map = new ObjectMapper().readValue(response, HashMap.class);
-        return (List<String>) map.get("roles");
+		try {
+			String response = getUserInfo(token);
+	
+	        // get roles
+	        Map map = new ObjectMapper().readValue(response, HashMap.class);
+	        return (List<String>) map.get("roles");
+	
+		} catch (Exception e) {
+			System.out.println("Error" + e);
+			// TODO: handle exception
+		}
+		return null;
     }
 
     private String getUserInfo(String token) {

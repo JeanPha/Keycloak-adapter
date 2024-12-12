@@ -108,7 +108,8 @@ public class IndexController {
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error interno");
-            errorResponse.put("message", "Error interno del servidor.");
+            errorResponse.put("message", "Error interno del servidor: "+ e.getMessage());
+            System.out.println("Error: "+ e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
