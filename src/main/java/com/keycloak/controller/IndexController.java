@@ -29,7 +29,7 @@ import com.keycloak.service.JwtService;
 import com.keycloak.service.KeycloakRestService;
 
 //@CrossOrigin(origins = "*")
-@CrossOrigin(origins = {"http://localhost:3000","http://157.173.204.202:9001", "http://localhost:4200","http://abstract.com.ar", "https://abstract-proyecto.herokuapp.com"})
+@CrossOrigin(origins = {"http://localhost:8081","http://157.173.204.202:9001", "http://localhost:4200","http://abstract.com.ar", "https://abstract-proyecto.herokuapp.com"})
 @RestController
 public class IndexController {
 
