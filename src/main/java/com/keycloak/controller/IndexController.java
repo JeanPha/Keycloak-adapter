@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
@@ -68,10 +69,10 @@ public class IndexController {
             return ResponseEntity.ok(HashMap);
         } catch (Exception e) {
             logger.error("exception : {} ", e.getMessage());
-            throw new BussinesRuleException("01", e.getMessage(),HttpStatus.FORBIDDEN);             
+            throw new BussinesRuleException("01", e.getMessage(),HttpStatus.FORBIDDEN);
         }
     }
-    
+
     @GetMapping("/valid")
     public ResponseEntity<?> valid(@RequestHeader("Authorization") String authHeader) throws BussinesRuleException {
         try {
@@ -81,21 +82,27 @@ public class IndexController {
             }});
         } catch (Exception e) {
             logger.error("token is not valid, exception : {} ", e.getMessage());
-           throw new BussinesRuleException("is_valid", "False",HttpStatus.FORBIDDEN);   
-           
+            throw new BussinesRuleException("is_valid", "False",HttpStatus.FORBIDDEN);
+
         }
     }
 
+    @CrossOrigin(
+            origins = {"http://157.173.204.202:8052"},
+            allowedHeaders = "*",
+            methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.OPTIONS},
+            allowCredentials = "true"
+    )
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(String username, String password) {
-    	try {
-    		 String login = restService.login(username, password);
-    		 System.out.println(username);
-	          logger.error("Username: ", username);
-    		 System.out.println(password);    		 
-	          logger.error("Password: ", password);
+        try {
+            String login = restService.login(username, password);
+            System.out.println(username);
+            logger.error("Username: ", username);
+            System.out.println(password);
+            logger.error("Password: ", password);
 
-    	     return ResponseEntity.ok(login);	 
+            return ResponseEntity.ok(login);
         } catch (HttpClientErrorException e) {
             Map<String, String> errorResponse = new HashMap<>();
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -123,16 +130,16 @@ public class IndexController {
             }});
         } catch (Exception e) {
             logger.error("unable to logout, exception : {} ", e.getMessage());
-            throw new BussinesRuleException("logout", "False",HttpStatus.FORBIDDEN);   
+            throw new BussinesRuleException("logout", "False",HttpStatus.FORBIDDEN);
         }
-    }  
+    }
     @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> refresh(@RequestParam(value = "refresh_token", name = "refresh_token") String refreshToken) throws BussinesRuleException {
-        try {            
+        try {
             return ResponseEntity.ok(restService.refresh(refreshToken));
         } catch (Exception e) {
             logger.error("unable to refresh, exception : {} ", e.getMessage());
-            throw new BussinesRuleException("refresh", "False",HttpStatus.FORBIDDEN);   
+            throw new BussinesRuleException("refresh", "False",HttpStatus.FORBIDDEN);
         }
-    }  
+    }
 }
