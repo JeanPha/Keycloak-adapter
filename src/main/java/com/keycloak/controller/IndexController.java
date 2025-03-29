@@ -88,12 +88,7 @@ public class IndexController {
         }
     }
 
-    @CrossOrigin(
-            origins = {"http://157.173.204.202:8052"},
-            allowedHeaders = "*",
-            methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.OPTIONS},
-            allowCredentials = "true"
-    )
+    
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(String username, String password) {
         try {
