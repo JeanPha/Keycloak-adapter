@@ -31,7 +31,7 @@ import com.keycloak.service.KeycloakRestService;
 
 //@CrossOrigin(origins = "*")
 //@CrossOrigin(origins = {"http://localhost:8081", "http://157.173.204.202:9001", "http://157.173.204.202:8052", "http://localhost:4200", "http://abstract.com.ar", "https://abstract-proyecto.herokuapp.com"})
-@CrossOrigin(origins = {"http://localhost:4200"})
+//@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 public class IndexController {
 
@@ -88,7 +88,7 @@ public class IndexController {
         }
     }
 
-    
+
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(String username, String password) {
         try {
